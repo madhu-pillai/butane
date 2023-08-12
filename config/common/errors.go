@@ -53,10 +53,10 @@ var (
 	ErrMountUnitNoFormat = errors.New("format is required if with_mount_unit is true")
 
 	// boot device
-	ErrUnknownBootDeviceLayout = errors.New("layout must be one of: aarch64, ppc64le, x86_64, s390x-zfcp, s390x-eckd, s390x-virt")
+	ErrUnknownBootDeviceLayout = errors.New("layout must be one of: aarch64, ppc64le, s390x-eckd, s390x-virt, s390x-zfcp and x86_64")
 	ErrTooFewMirrorDevices     = errors.New("mirroring requires at least two devices")
-	//ErrNoLuksBootDevice    = errors.New("device field support layout: s390x-eckd /dev/dasd[a-z] or s390x-zfcp /dev/sd[a-z]")
-	ErrMirrorNotSupport    = errors.New("mirror is not support with luks.device for layout: s390x-zfcp, s390x-eckd")
+	ErrNoLuksBootDevice        = errors.New("device-s390x is required if layout: s390x-eckd && device-s390x: /dev/dasd[a-z] or s390x-zfcp && device: /dev/sd[a-z]")
+	ErrMirrorNotSupport        = errors.New("layout: s390x-zfcp or s390x-eckd does not support mirror" )
 
 	// partition
 	ErrWrongPartitionNumber = errors.New("incorrect partition number; a new partition will be created using reserved label")

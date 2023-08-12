@@ -17,8 +17,7 @@ package v1_6_exp
 import (
 	"fmt"
 	"strings"
-	"regexp"
-	"strconv"
+	//"regexp"
 
 	baseutil "github.com/coreos/butane/base/util"
 	"github.com/coreos/butane/config/common"
@@ -31,10 +30,10 @@ import (
 	"github.com/coreos/vcontext/report"
 )
 
- var (
- 	dasdRe = regexp.MustCompile("(/dev/dasd[a-z]$)")
- 	sdRe = regexp.MustCompile("(/dev/sd[a-z]$)")
- )
+//  var (
+//  	dasdRe = regexp.MustCompile("(/dev/dasd[a-z]$)")
+//  	sdRe = regexp.MustCompile("(/dev/sd[a-z]$)")
+//  )
 
 const (
 	reservedTypeGuid = "8DA63339-0007-60C0-C436-083AC8230908"
@@ -150,6 +149,25 @@ func (c Config) processBootDevice(config *types.Config, ts *translate.Translatio
 		panic("unknown layout")
 	}
 
+	// //check for s390x luks.device-s390x
+	// var diskDASD bool
+	// var diskSCSI bool
+	// var dasd string
+	// var sd string
+	// if wantDevice {
+			
+	// 		dasd = dasdRe.FindString(*c.BootDevice.Luks.Device)
+	// 		sd = sdRe.FindString(*c.BootDevice.Luks.Device)
+	// 		switch {
+	// 		case len(dasd) > 0:
+	// 			diskDASD = true
+	// 		case len(sd) > 0:
+	// 			diskSCSI = true
+	// 		default:
+	// 			panic("Device must be specified for s390x layout")
+	// 	}
+	// }
+
 	// mirrored root disk
 	if wantMirror {
 		// partition disks
@@ -252,22 +270,20 @@ func (c Config) processBootDevice(config *types.Config, ts *translate.Translatio
 	//encrypted root partition
 	if wantLuks {
 		var luksDevice string
-		dasd := dasdRe.FindString(c.BootDevice.Luks.Device)
-		sd := sdRe.FindString(c.BootDevice.Luks.Device)
+		//Define the device for s390x layout
+		device_s390x := *c.BootDevice.Luks.Device
 		switch {
-		case wantMBR && len(sd) > 0:
-			luksDevice = sd + strconv.Itoa(2)
-		case wantDasd && len(dasd) > 0:
-			luksDevice = dasd + strconv.Itoa(2)
+		case wantMBR:
+			// Luks Device for zfcp-scsi 
+			luksDevice = device_s390x + "2"
+		case wantDasd:
+			//Luks Device for zeckd-Dasd
+			luksDevice = device_s390x + "2"
 		case wantMirror:
 			luksDevice = "/dev/md/md-root"
 		default:
 			luksDevice = "/dev/disk/by-partlabel/root"
 		}
-		// luksDevice := "/dev/disk/by-partlabel/root"
-		// if wantMirror {
-		// 	luksDevice = "/dev/md/md-root"
-		// }
 		clevis, ts2, r2 := translateBootDeviceLuks(c.BootDevice.Luks, options)
 		rendered.Storage.Luks = []types.Luks{{
 			Clevis:     clevis,

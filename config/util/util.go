@@ -37,6 +37,7 @@ import (
 
 var (
 	snakeRe = regexp.MustCompile("(MiB|[A-Z])")
+	//diskRe = regexp.MustCompile("(/dev/dasd[a-z]$|/dev/sd[a-z]$)")
 )
 
 // Misc helpers
@@ -248,3 +249,21 @@ func TranslateReportPaths(r report.Report, ts translate.TranslationSet) report.R
 	}
 	return ret
 }
+
+// //DiskVal returns either dasd or sd for s390x device validation.
+// func DiskVal(d string) string {
+// 	disk_eckd := DiskRe(d)
+// 	disk_scsi := DiskRe(d)
+// 	switch {
+// 	case disk_eckd:
+// 		return "dasd"
+// 	case disk_scsi:
+// 		return "sd"
+// 	}
+// 	return ""
+// }
+
+// //DiskRe to validate the passing string is dasd or sd 
+// func DiskRe(d string) bool {
+// 	return diskRe.MatchString(d)
+// }
