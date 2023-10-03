@@ -56,6 +56,8 @@ var (
 	// boot device
 	ErrUnknownBootDeviceLayout = errors.New("layout must be one of: aarch64, ppc64le, x86_64")
 	ErrTooFewMirrorDevices     = errors.New("mirroring requires at least two devices")
+	ErrNoLuksBootDevice        = errors.New("s390x-device is required if layout: s390x-eckd && s390x-device: /dev/dasd[a-z] or s390x-zfcp && s390x-device: /dev/sd[a-z]")
+	ErrMirrorNotSupport        = errors.New("layout: s390x-zfcp or s390x-eckd does not support mirror")
 
 	// partition
 	ErrReuseByLabel         = errors.New("partitions cannot be reused by label; number must be specified except on boot disk (/dev/disk/by-id/coreos-boot-disk) or when wipe_table is true")
